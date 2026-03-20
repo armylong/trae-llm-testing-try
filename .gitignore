@@ -1,0 +1,23 @@
+# 系统自动生成的文件（Windows/macOS/Linux）
+.DS_Store                # macOS 隐藏文件
+Thumbs.db                # Windows 缩略图缓存
+ehthumbs.db              # Windows 缩略图缓存
+Desktop.ini              # Windows 文件夹配置文件
+*.tmp                    # 临时文件
+*.log                    # 日志文件（如需追踪关键日志可移除）
+*.swp                    # Vim 交换文件
+*~                       # 临时文件（Linux/macOS）
+
+# 编辑器/IDE 配置（根据自己用的工具选）
+.idea/                   # IntelliJ IDEA/PyCharm/WebStorm
+.vscode/                 # VS Code
+.project                 # Eclipse
+.classpath               # Eclipse
+.settings/               # Eclipse
+*.sublime-project        # Sublime Text
+*.sublime-workspace      # Sublime Text
+.nvim/                   # Neovim
+
+# 缓存/锁文件
+*.lock
+.cache/
