@@ -99,14 +99,21 @@ class TaskManager {
         const filteredTasks = this.searchTasks(searchKeyword);
 
         ['todo', 'in-progress', 'completed', 'abandoned'].forEach(status => {
+            const column = document.getElementById(`${status}-column`);
             const taskList = document.getElementById(`${status}-list`);
             taskList.innerHTML = '';
 
-            const tasks = filteredTasks.filter(t => t.status === status);
-            tasks.forEach(task => {
-                const taskCard = this.createTaskCard(task);
-                taskList.appendChild(taskCard);
-            });
+            // 根据当前tab显示对应的任务
+            if (this.currentTab === 'all' || this.currentTab === status) {
+                const tasks = filteredTasks.filter(t => t.status === status);
+                tasks.forEach(task => {
+                    const taskCard = this.createTaskCard(task);
+                    taskList.appendChild(taskCard);
+                });
+                column.style.display = 'block';
+            } else {
+                column.style.display = 'none';
+            }
         });
     }
 
@@ -150,6 +157,7 @@ class TaskManager {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 this.currentTab = tab.dataset.tab;
+                this.renderTasks();
             });
         });
 
