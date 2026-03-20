@@ -2,16 +2,16 @@ class DragManager {
     constructor() {
         this.draggedElement = null;
         this.placeholder = null;
-        this.sourceContainer = null;
-        this.currentContainer = null;
-        this.dragItems = [];
+        this.dragOverData = {
+            container: null,
+            afterId: null
+        };
     }
 
-    init(containerSelector) {
+    init() {
         document.addEventListener('dragstart', this.handleDragStart.bind(this));
         document.addEventListener('dragend', this.handleDragEnd.bind(this));
         document.addEventListener('dragover', this.handleDragOver.bind(this));
-        document.addEventListener('dragleave', this.handleDragLeave.bind(this));
         document.addEventListener('drop', this.handleDrop.bind(this));
     }
 
@@ -19,13 +19,10 @@ class DragManager {
         if (!e.target.classList.contains('task-card')) return;
         
         this.draggedElement = e.target;
-        this.sourceContainer = e.target.parentElement;
         
         e.target.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', e.target.dataset.id);
-        
-        this.createPlaceholder(e.target);
         
         setTimeout(() => {
             e.target.style.opacity = '0.5';
@@ -39,10 +36,8 @@ class DragManager {
         e.target.style.opacity = '1';
         
         this.removePlaceholder();
-        
         this.draggedElement = null;
-        this.sourceContainer = null;
-        this.currentContainer = null;
+        this.dragOverData = { container: null, afterId: null };
     }
 
     handleDragOver(e) {
@@ -52,23 +47,15 @@ class DragManager {
         const container = e.target.closest('.card-list');
         if (!container) return;
         
-        this.currentContainer = container;
-        
         const afterElement = this.getDragAfterElement(container, e.clientY);
         
-        if (this.placeholder && this.placeholder.parentNode === container) {
-            if (afterElement) {
-                container.insertBefore(this.placeholder, afterElement);
-            } else {
-                container.appendChild(this.placeholder);
-            }
-        }
-    }
-
-    handleDragLeave(e) {
-        const container = e.target.closest('.card-list');
-        if (container && !container.contains(e.relatedTarget)) {
-            this.removePlaceholder();
+        this.dragOverData.container = container;
+        this.dragOverData.afterId = afterElement ? afterElement.dataset.id : null;
+        
+        if (afterElement) {
+            container.insertBefore(this.getPlaceholder(), afterElement);
+        } else {
+            container.appendChild(this.getPlaceholder());
         }
     }
 
@@ -76,7 +63,7 @@ class DragManager {
         e.preventDefault();
         
         const taskId = e.dataTransfer.getData('text/plain');
-        const container = e.target.closest('.card-list');
+        const container = this.dragOverData.container || e.target.closest('.card-list');
         
         if (!container || !taskId) return;
         
@@ -84,31 +71,54 @@ class DragManager {
         
         this.removePlaceholder();
         
-        const orderedIds = Array.from(container.querySelectorAll('.task-card:not(.dragging)'))
-            .map(card => card.dataset.id);
+        let orderedIds = [];
+        const cards = container.querySelectorAll('.task-card');
         
-        if (this.draggedElement) {
-            orderedIds.splice(orderedIds.indexOf(taskId), 1);
-            orderedIds.unshift(taskId);
+        cards.forEach(card => {
+            if (!card.classList.contains('dragging')) {
+                orderedIds.push(card.dataset.id);
+            }
+        });
+        
+        const afterId = this.dragOverData.afterId;
+        
+        if (afterId) {
+            const afterIdx = orderedIds.indexOf(afterId);
+            if (afterIdx > -1) {
+                orderedIds.splice(afterIdx, 0, taskId);
+            } else {
+                orderedIds.unshift(taskId);
+            }
+        } else {
+            if (!orderedIds.includes(taskId)) {
+                orderedIds.push(taskId);
+            }
+        }
+        
+        if (orderedIds.length === 0) {
+            orderedIds = [taskId];
         }
         
         if (typeof window.handleTaskDrop === 'function') {
             window.handleTaskDrop(taskId, newStatus, orderedIds);
         }
+        
+        this.dragOverData = { container: null, afterId: null };
     }
 
-    createPlaceholder(element) {
-        this.placeholder = document.createElement('div');
-        this.placeholder.className = 'drag-placeholder';
-        this.placeholder.style.height = element.offsetHeight + 'px';
-        element.parentElement.insertBefore(this.placeholder, element);
+    getPlaceholder() {
+        if (!this.placeholder) {
+            this.placeholder = document.createElement('div');
+            this.placeholder.className = 'drag-placeholder';
+            this.placeholder.textContent = '拖放到这里';
+        }
+        return this.placeholder;
     }
 
     removePlaceholder() {
         if (this.placeholder && this.placeholder.parentNode) {
             this.placeholder.parentNode.removeChild(this.placeholder);
         }
-        this.placeholder = null;
     }
 
     getDragAfterElement(container, y) {

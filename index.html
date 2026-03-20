@@ -36,39 +36,36 @@
             <input type="text" id="searchInput" class="search-input" placeholder="搜索任务标题或描述...">
         </div>
 
-        <div class="tabs-container">
-            <div class="tabs-header">
-                <button class="tab-btn active" data-tab="todo">
-                    <span class="tab-name">待办</span>
-                    <span class="tab-count" data-count="todo">0</span>
-                </button>
-                <button class="tab-btn" data-tab="in-progress">
-                    <span class="tab-name">进行中</span>
-                    <span class="tab-count" data-count="in-progress">0</span>
-                </button>
-                <button class="tab-btn" data-tab="completed">
-                    <span class="tab-name">已完成</span>
-                    <span class="tab-count" data-count="completed">0</span>
-                </button>
-                <button class="tab-btn" data-tab="abandoned">
-                    <span class="tab-name">已放弃</span>
-                    <span class="tab-count" data-count="abandoned">0</span>
-                </button>
-            </div>
-        </div>
-
         <div class="board-container">
-            <div class="tab-panel active" id="panel-todo">
-                <div class="card-list" data-status="todo"></div>
-            </div>
-            <div class="tab-panel" id="panel-in-progress">
-                <div class="card-list" data-status="in-progress"></div>
-            </div>
-            <div class="tab-panel" id="panel-completed">
-                <div class="card-list" data-status="completed"></div>
-            </div>
-            <div class="tab-panel" id="panel-abandoned">
-                <div class="card-list" data-status="abandoned"></div>
+            <div class="board">
+                <div class="board-column" data-status="todo">
+                    <div class="column-header">
+                        <span class="column-title">待办</span>
+                        <span class="column-count" data-count="todo">0</span>
+                    </div>
+                    <div class="card-list" data-status="todo"></div>
+                </div>
+                <div class="board-column" data-status="in-progress">
+                    <div class="column-header">
+                        <span class="column-title">进行中</span>
+                        <span class="column-count" data-count="in-progress">0</span>
+                    </div>
+                    <div class="card-list" data-status="in-progress"></div>
+                </div>
+                <div class="board-column" data-status="completed">
+                    <div class="column-header">
+                        <span class="column-title">已完成</span>
+                        <span class="column-count" data-count="completed">0</span>
+                    </div>
+                    <div class="card-list" data-status="completed"></div>
+                </div>
+                <div class="board-column" data-status="abandoned">
+                    <div class="column-header">
+                        <span class="column-title">已放弃</span>
+                        <span class="column-count" data-count="abandoned">0</span>
+                    </div>
+                    <div class="card-list" data-status="abandoned"></div>
+                </div>
             </div>
         </div>
 
