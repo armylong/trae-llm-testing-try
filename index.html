@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人TODO看板</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>个人TODO看板</h1>
+            <div class="header-actions">
+                <button id="importBtn" class="btn btn-secondary">导入</button>
+                <button id="exportBtn" class="btn btn-secondary">导出</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <span class="stat-label">总任务数</span>
+                <span class="stat-value" id="totalTasks">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">完成率</span>
+                <span class="stat-value" id="completionRate">0%</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">今日到期</span>
+                <span class="stat-value" id="todayDue">0</span>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="搜索任务标题或描述...">
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="todo">
+                    <span class="tab-name">待办</span>
+                    <span class="tab-count" data-count="todo">0</span>
+                </button>
+                <button class="tab-btn" data-tab="in-progress">
+                    <span class="tab-name">进行中</span>
+                    <span class="tab-count" data-count="in-progress">0</span>
+                </button>
+                <button class="tab-btn" data-tab="completed">
+                    <span class="tab-name">已完成</span>
+                    <span class="tab-count" data-count="completed">0</span>
+                </button>
+                <button class="tab-btn" data-tab="abandoned">
+                    <span class="tab-name">已放弃</span>
+                    <span class="tab-count" data-count="abandoned">0</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="board-container">
+            <div class="tab-panel active" id="panel-todo">
+                <div class="card-list" data-status="todo"></div>
+            </div>
+            <div class="tab-panel" id="panel-in-progress">
+                <div class="card-list" data-status="in-progress"></div>
+            </div>
+            <div class="tab-panel" id="panel-completed">
+                <div class="card-list" data-status="completed"></div>
+            </div>
+            <div class="tab-panel" id="panel-abandoned">
+                <div class="card-list" data-status="abandoned"></div>
+            </div>
+        </div>
+
+        <button id="addTaskBtn" class="fab-btn">+</button>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">新增任务</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="taskTitle">标题</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDesc">描述</label>
+                    <textarea id="taskDesc" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskDueDate">截止日期</label>
+                    <input type="date" id="taskDueDate" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmOverlay">
+        <div class="modal-container modal-small">
+            <div class="modal-header">
+                <h2>确认删除</h2>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除这个任务吗？此操作不可撤销。</p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="confirmCancel">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils/date.js"></script>
+    <script src="js/data/storage.js"></script>
+    <script src="js/utils/drag.js"></script>
+    <script src="js/components/modal.js"></script>
+    <script src="js/components/card.js"></script>
+    <script src="js/components/tab.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
